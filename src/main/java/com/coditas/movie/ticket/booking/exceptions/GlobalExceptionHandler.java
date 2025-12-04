@@ -96,4 +96,18 @@ public class GlobalExceptionHandler {
                 );
         return new ResponseEntity<>(errorResponseDto,HttpStatus.METHOD_NOT_ALLOWED);
     }
-}
+
+    @ExceptionHandler(InvalidShowTimingException.class)
+    public ResponseEntity<ErrorResponseDto<String>> handleShowTimingException(InvalidShowTimingException ex) {
+        log.error("Invalid show timing: {}", ex.getMessage());
+
+        ErrorResponseDto<String> error = new ErrorResponseDto<>(false,
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid show timing entered",
+                ex.getMessage()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    }
+

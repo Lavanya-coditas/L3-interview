@@ -31,4 +31,8 @@ public class Seat {
     @OneToMany(mappedBy = "seat")
     private List<BookedSeat> bookedSeats;
 
+    //  @Transient
+    //    public String getSeatName() {
+    //        return "R" + rowNumber + "S" + seatNumber;
+    //    }
 }

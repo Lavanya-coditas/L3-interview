@@ -1,4 +1,4 @@
-
+package com.coditas.movie.ticket.booking.AOP;
 
 import jakarta.persistence.Column;
 import lombok.extern.slf4j.Slf4j;
@@ -13,19 +13,16 @@ import org.springframework.util.StopWatch;
 @Component
 public class LoggingAspects
 {
-    @Pointcut("execution(* com.SocialMedia.Social.Media.Platform.project.Service.*.*(..))")
+    @Pointcut("execution(* com.coditas.movie.ticket.booking.services.*.*(..))")
     public  void ServiceMethod(){};
 
     @Around("ServiceMethod()")
     public Object monitorPerformance(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-
         Object result = joinPoint.proceed();
-
         stopWatch.stop();
         long executionTime = stopWatch.getTotalTimeMillis();
-        //not hardcoded
         if (executionTime > 300) {
             log.warn("Performance : {}.{}() took {} ms",
                     joinPoint.getTarget().getClass().getSimpleName(),

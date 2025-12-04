@@ -28,6 +28,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String path = request.getRequestURI();
+
         //skip validation for these endpoints
         if (path.equals("/api/auth/login") || path.equals("/api/auth/register")||path.equals("/api/auth/refresh")) {
             filterChain.doFilter(request, response);

@@ -1,15 +1,18 @@
 package com.coditas.movie.ticket.booking.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+
 @Table(name = "show_table")
 public class Show {
     @Id

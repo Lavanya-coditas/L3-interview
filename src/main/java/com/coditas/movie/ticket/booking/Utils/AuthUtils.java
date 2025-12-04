@@ -24,16 +24,7 @@ public class AuthUtils
         return Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    //    public String generateAccessToken( Users user) {
-//        return Jwts.builder()
-//                .subject(user.getUsername())
-//                .claim("userId", user.getId())
-//                .claim("role", user.getRole().name()) // Include role for role-based access
-//                .issuedAt(new Date(System.currentTimeMillis()))
-//                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 300)) // 5 hours
-//                .signWith(getSecretKey())
-//                .compact();
-//    }
+
 //access token
     public String generateAccessToken(Users user) {
         return Jwts.builder()
@@ -46,7 +37,7 @@ public class AuthUtils
                 .compact();
     }
 
-    // ------------------------- REFRESH TOKEN ----------------------------
+
     public String generateRefreshToken(Users user) {
         return Jwts.builder()
                 .subject(user.getEmail())

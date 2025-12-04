@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/theatre")
@@ -19,17 +20,15 @@ import org.springframework.web.bind.annotation.*;
 public class TheatreController {
 
     private final TheatreService theatreService;
-
-    @PostMapping("/create/new")
     @PreAuthorize("hasAuthority('THEATRE_OWNER')")
+    @PostMapping("/create/new")
     @Operation(summary = "new theatre")
     public ApiResponseDto<Void> createTheatre(@Valid @RequestBody TheatreDto theatreDto)
     {
         return theatreService.createNewTheatre(theatreDto);
     }
-
-    @GetMapping("/get/theatres")
     @PreAuthorize("hasAuthority('THEATRE_OWNER')")
+    @GetMapping("/get/theatres")
     @Operation(summary = "get all theatres")
     public ApiResponseDto<Page<TheatreResponseDto>> getAllTheatres(
             @RequestParam(value = "sortBy", defaultValue = "name",required = false) String sortBy,
@@ -38,6 +37,7 @@ public class TheatreController {
             @RequestParam(value = "pageSize", defaultValue = "10",required = false) int pageSize,
             @RequestParam(value = "pageNumber", defaultValue = "0",required = false) int pageNumber
     ) {
+
         Page<TheatreResponseDto> response = theatreService.getAllTheatresForCurrentTheatreOwner(pageSize, pageNumber, search, sorDirection, sortBy);
         return new ApiResponseDto<>("theatres fetched successfully", true, response);
     }

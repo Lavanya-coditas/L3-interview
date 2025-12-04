@@ -1,4 +1,7 @@
 package com.coditas.movie.ticket.booking.repositories;
 
-public interface MovieRepository {
+import com.coditas.movie.ticket.booking.entity.Movie;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MovieRepository extends JpaRepository<Movie,Long> {
 }

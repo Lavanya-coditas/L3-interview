@@ -8,6 +8,8 @@ import com.coditas.movie.ticket.booking.dto.LoginResponseDto;
 import com.coditas.movie.ticket.booking.dto.RegisterDto;
 import com.coditas.movie.ticket.booking.entity.RefreshToken;
 import com.coditas.movie.ticket.booking.entity.Users;
+import com.coditas.movie.ticket.booking.exceptions.InvalidCredentialsException;
+import com.coditas.movie.ticket.booking.exceptions.UserAlreadyExistsException;
 import com.coditas.movie.ticket.booking.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,7 +30,7 @@ public class UserService
     public ApiResponseDto<Void> registerUser(RegisterDto registerDto) {
         Users existingUser = userRepository.findByEmail(registerDto.getEmail());
         if (existingUser!=null) {
-            throw new RuntimeException("User already exists");
+            throw new UserAlreadyExistsException("User already exists");
         }
         Users user = new Users();
         user.setRole(Role.USER);
@@ -51,7 +53,7 @@ public class UserService
         }
         //check pasword
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         }
 
         String accessToken = authUtil.generateAccessToken(user);

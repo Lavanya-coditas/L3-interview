@@ -6,8 +6,8 @@ import com.coditas.movie.ticket.booking.entity.RefreshToken;
 import com.coditas.movie.ticket.booking.entity.Users;
 import com.coditas.movie.ticket.booking.repositories.RefreshTokenRepository;
 import com.coditas.movie.ticket.booking.repositories.UserRepository;
+import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -26,11 +26,11 @@ public class RefreshTokenService {
     public AccessTokenResponse refreshAccessToken(String refreshToken) {
 
         RefreshToken token = refreshTokenRepository.findByToken(refreshToken)
-                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+                .orElseThrow(() -> new JwtException("Invalid refresh token"));
 
         if (isTokenExpired(token)) {
             refreshTokenRepository.delete(token);
-            throw new RuntimeException("Refresh token expired. Please login again.");
+            throw new JwtException("Refresh token expired. Please login again.");
         }
 
         Users user = token.getUser();

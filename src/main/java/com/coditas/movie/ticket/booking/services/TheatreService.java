@@ -7,6 +7,7 @@ import com.coditas.movie.ticket.booking.dto.TheatreResponseDto;
 import com.coditas.movie.ticket.booking.dto.UpdateTheatreDto;
 import com.coditas.movie.ticket.booking.entity.Theatre;
 import com.coditas.movie.ticket.booking.entity.Users;
+import com.coditas.movie.ticket.booking.exceptions.UnauthorizedAccessException;
 import com.coditas.movie.ticket.booking.repositories.TheatreRepository;
 import com.coditas.movie.ticket.booking.repositories.UserRepository;
 import com.coditas.movie.ticket.booking.specifications.TheatreSpecifications;
@@ -27,6 +28,12 @@ public class TheatreService {
     private final TheatreRepository theatreRepository;
     private final UserRepository userRepository;
     public ApiResponseDto<Void> createNewTheatre(TheatreDto theatreDto) {
+        String email= SecurityContextHolder.getContext().getAuthentication().getName();
+        Users loggedUser=userRepository.findByEmail(email);
+        if (loggedUser.getRole()!=Role.THEATRE_OWNER)
+        {
+            throw  new UnauthorizedAccessException("Only theatre owner can create theatres");
+        }
         Theatre theatre = new Theatre();
         Users user =  userRepository.findById(theatreDto.getOwner_id()).orElseThrow( ()-> new RuntimeException("user not found"));
         theatre.setName(theatreDto.getName());
