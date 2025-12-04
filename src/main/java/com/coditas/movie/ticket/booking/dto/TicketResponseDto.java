@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketResponseDto {
+
     private Long ticketId;
     private String bookingTime;
     private Double totalPrice;

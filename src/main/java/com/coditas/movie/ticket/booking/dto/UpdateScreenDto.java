@@ -13,7 +13,6 @@ import lombok.NonNull;
 @NoArgsConstructor
 public class UpdateScreenDto
 {
-
     @NotBlank(message = "Screen name is mjst")
     private String name;
 
@@ -21,8 +20,8 @@ public class UpdateScreenDto
     @NotNull(message = "total rows must be present")
     private Integer totalRows;
 
-    @Positive(message = "seats must be postive")
-    @NotNull(message = "setas must be present")
+    @Positive(message = "seats must be positive")
+    @NotNull(message = "seats must be present")
     private Integer seatsPerRow;
 
 }

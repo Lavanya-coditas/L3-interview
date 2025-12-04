@@ -4,6 +4,7 @@ import com.coditas.movie.ticket.booking.dto.ApiResponseDto;
 import com.coditas.movie.ticket.booking.dto.TicketBookingRequestDto;
 import com.coditas.movie.ticket.booking.dto.TicketResponseDto;
 import com.coditas.movie.ticket.booking.services.TicketService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ public class TicketController {
 
     @PostMapping("/book/{userId}")
     @PreAuthorize("hasAuthority('USER','THEATRE_OWNER')")
+    @Operation(summary = "book tocket")
     public ApiResponseDto<TicketResponseDto> bookTicket(@PathVariable Long userId, @RequestBody TicketBookingRequestDto requestDto) {
         TicketResponseDto response = ticketService.bookTicket(requestDto, userId);
         return new ApiResponseDto<>("Ticket booked succeffulyy", true,response);
@@ -29,6 +31,7 @@ public class TicketController {
 
     @GetMapping("/tickets/{userId}")
     @PreAuthorize("hasAuthority('USER','THEATRE_OWNER')")
+    @Operation(summary = "gets the users tickets list")
     public ApiResponseDto<List<TicketResponseDto>> getUserTickets(@PathVariable Long userId) {
         List<TicketResponseDto> tickets = ticketService.getTicketsByUser(userId);
         return new ApiResponseDto<>("Ticket fetched succeffulyy", true,tickets);
@@ -36,6 +39,7 @@ public class TicketController {
 
     @DeleteMapping("/tickets/{userId}/{ticketId}")
     @PreAuthorize("hasAuthority('USER','THEATRE_OWNER')")
+    @Operation(summary = "cancel ticket")
     public ApiResponseDto<TicketResponseDto> cancelTicket(@PathVariable Long userId, @PathVariable Long ticketId) {
         TicketResponseDto response = ticketService.cancelTicket(ticketId, userId);
         return new ApiResponseDto<>("Ticket Cancelled succesfully ",true,response);

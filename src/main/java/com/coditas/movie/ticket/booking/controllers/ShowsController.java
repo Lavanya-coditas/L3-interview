@@ -2,7 +2,6 @@ package com.coditas.movie.ticket.booking.controllers;
 
 import com.coditas.movie.ticket.booking.dto.ApiResponseDto;
 import com.coditas.movie.ticket.booking.dto.CreateShowDto;
-import com.coditas.movie.ticket.booking.dto.ShowDto;
 import com.coditas.movie.ticket.booking.dto.ShowResponseDto;
 import com.coditas.movie.ticket.booking.services.ShowService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +21,7 @@ public class ShowsController
     private final ShowService showsService;
     @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('THEATRE_OWNER')")
+    @Operation(summary = "create a new show for screen")
     public ApiResponseDto<Void> createShow(@Valid @RequestBody CreateShowDto showDto)
     {
       showsService.createShowForScreens(showDto);
@@ -30,6 +30,7 @@ public class ShowsController
 
     @GetMapping("/get/shows")
     @PreAuthorize("hasAuthority('USER','THEATRE_OWNER')")
+    @Operation(summary = "get shows for users and theatre owner")
     public ApiResponseDto<Page<ShowResponseDto>> getAllShows(
             @RequestParam(defaultValue = "10",required = false) int pageSize,
             @RequestParam(defaultValue = "0",required = false) int pageNumber,

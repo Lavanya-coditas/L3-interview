@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class CreateShowDto {
     private Long movieId;
     private Long screenId;
-    private String startTime;   // Format example: "2025-12-06T18:00"
+    private String startTime;
     private Double price;
 }
 

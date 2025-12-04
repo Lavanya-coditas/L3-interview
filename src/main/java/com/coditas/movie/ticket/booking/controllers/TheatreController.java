@@ -35,8 +35,8 @@ public class TheatreController {
             @RequestParam(value = "sortDirection", defaultValue = "asc",required = false) String sorDirection,
             @RequestParam(value = "search",required = false) String search,
             @RequestParam(value = "pageSize", defaultValue = "10",required = false) int pageSize,
-            @RequestParam(value = "pageNumber", defaultValue = "0",required = false) int pageNumber
-    ) {
+            @RequestParam(value = "pageNumber", defaultValue = "0",required = false) int pageNumber)
+    {
 
         Page<TheatreResponseDto> response = theatreService.getAllTheatresForCurrentTheatreOwner(pageSize, pageNumber, search, sorDirection, sortBy);
         return new ApiResponseDto<>("theatres fetched successfully", true, response);
@@ -45,7 +45,8 @@ public class TheatreController {
 
     @PutMapping("/update/{id}")
     @Operation(summary = "Update theatre by ID")
-    public ApiResponseDto<Void> updateTheatre(@PathVariable Long id, @RequestBody UpdateTheatreDto dto) {
+    public ApiResponseDto<Void> updateTheatre (@PathVariable Long id, @RequestBody UpdateTheatreDto dto)
+    {
         return theatreService.updateTheatre(id, dto);
     }
 }
