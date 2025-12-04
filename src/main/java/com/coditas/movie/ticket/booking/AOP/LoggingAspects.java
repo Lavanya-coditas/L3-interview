@@ -17,14 +17,14 @@ public class LoggingAspects
     public  void ServiceMethod(){};
 
     @Around("ServiceMethod()")
-    public Object monitorPerformance(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object executionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
         long executionTime = stopWatch.getTotalTimeMillis();
         if (executionTime > 300) {
-            log.warn("Performance : {}.{}() took {} ms",
+            log.warn("Performance : {}.{}() took {} milli seconds",
                     joinPoint.getTarget().getClass().getSimpleName(),
                     joinPoint.getSignature().getName(),
                     executionTime);
@@ -32,11 +32,26 @@ public class LoggingAspects
 
         return result;
     }
+
+    @Before("ServiceMethod()")
+    public void logMethodArgs(JoinPoint joinPoint) {
+        String methodName = joinPoint.getSignature().getName();
+        Object[] args = joinPoint.getArgs();
+        log.info("Method {}() called with aruments: {}", methodName, args);
+    }
+
+
+    @AfterReturning(pointcut = "ServiceMethod()", returning = "result")
+    public void logMethdResponse(JoinPoint joinPoint, Object result) {
+        String methodName = joinPoint.getSignature().getName();
+        log.info("Method {} returned : {}", methodName, result);
+    }
+
     @After("ServiceMethod()")
     public void logMethodCompletion(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getTarget().getClass().getSimpleName();
-        log.info("Execution of {}.{} completed", className, methodName);
+        log.info("Execution of {} .{} complted", className, methodName);
     }
 
     @Before("ServiceMethod()")

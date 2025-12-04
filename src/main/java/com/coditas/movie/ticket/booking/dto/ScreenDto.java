@@ -6,12 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ScreenDto
 {
-    @NotBlank(message = "Screen name is mjst")
+    @NotBlank(message = "Screen name is must")
     private String name;
 
     @Positive(message = "rows must be positive")
@@ -22,7 +23,7 @@ public class ScreenDto
     @NotNull(message = "setas must be present")
     private Integer seatsPerRow;
 
-    @Positive(message = "Theatre id enteres must be positive")
+    @Positive(message = "Theatre id entered must be positive")
     @NotNull(message = "Theatre id must be present")
     private Long theatreId;
 }
