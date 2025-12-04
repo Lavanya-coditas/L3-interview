@@ -8,9 +8,11 @@ import com.coditas.movie.ticket.booking.dto.TicketResponseDto;
 import com.coditas.movie.ticket.booking.entity.*;
 import com.coditas.movie.ticket.booking.exceptions.ResourceNotFoundException;
 import com.coditas.movie.ticket.booking.exceptions.SeatNotAvailableException;
+import com.coditas.movie.ticket.booking.exceptions.UnauthorizedAccessException;
 import com.coditas.movie.ticket.booking.exceptions.UserNotFoundException;
 import com.coditas.movie.ticket.booking.repositories.*;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.List;
 
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class TicketService {
 
     private final ShowRepository showRepository;
@@ -35,8 +37,7 @@ public class TicketService {
         Users user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
 
 
-        List<BookedSeat> alreadyBooked = bookedSeatRepository
-                .findBySeatIdInAndStatus(requestDto.getSeatIds(), BookedSeatStatus.BOOKED);
+        List<BookedSeat> alreadyBooked = bookedSeatRepository.findBySeatIdInAndStatus(requestDto.getSeatIds(), BookedSeatStatus.BOOKED);
 
         if (!alreadyBooked.isEmpty()) {
             throw new SeatNotAvailableException("One or more selected seats are already booked!");
@@ -77,6 +78,58 @@ public class TicketService {
                         .toList()
         );
         return ticketResponseDto;
+    }
+
+    public List<TicketResponseDto> getTicketsByUser(Long userId) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        List<Ticket> tickets = ticketRepository.findByUser(user);
+
+        List<TicketResponseDto> responseList = new ArrayList<>();
+        for (Ticket ticket : tickets) {
+            List<String> seatNumbers = ticket.getBookedSeats().stream()
+                    .map(seat -> "R" + seat.getSeat().getRowNumber() + "S" + seat.getSeat().getSeatNumber())
+                         .toList();
+
+            TicketResponseDto dto = new TicketResponseDto(
+                    ticket.getId(),
+                    ticket.getBookingTime().toString(),
+                    ticket.getTotalPrice(),
+                    ticket.getStatus().toString(),
+                    ticket.getBookedShow().getStartTime().toString(),
+                    seatNumbers
+            );
+            responseList.add(dto);
+        }
+        return responseList;
+    }
+
+
+    public TicketResponseDto cancelTicket(Long ticketId, Long userId) {
+
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
+        if (!ticket.getUser().getId().equals(userId)) {
+            throw new UnauthorizedAccessException("You cannot cancel others ticket  ");
+        }
+
+        List<BookedSeat> bookedSeats = ticket.getBookedSeats();
+        bookedSeatRepository.deleteAll(bookedSeats);
+
+        ticket.setStatus(TicketStatus.CANCELLED);
+        ticketRepository.save(ticket);
+
+          List< String  >  seatNumbers = bookedSeats.stream()
+                .map(seat ->"R"+seat.getSeat().getRowNumber()+"S"+seat.getSeat().getSeatNumber()).toList();
+
+        return new TicketResponseDto(
+                ticket.getId(),
+                ticket.getBookingTime().toString(),
+                ticket.getTotalPrice(),
+                ticket.getStatus().  toString(),
+                ticket. getBookedShow().getStartTime().toString(),
+                seatNumbers
+        );
     }
 
 }
